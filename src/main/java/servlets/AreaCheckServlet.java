@@ -36,11 +36,11 @@ public class AreaCheckServlet extends HttpServlet {
 
                     checkGraphic(req,resp);
                 } else {
-                    createErrorPage(resp, "Impossible to find X");
+                    resp.sendRedirect("errorPage.jsp");
                 }
 
             } else {
-                createErrorPage(resp, "Something get wrong!");
+                resp.sendRedirect("errorPage.jsp");
             }
 
         } catch (Exception e) {
@@ -91,7 +91,7 @@ public class AreaCheckServlet extends HttpServlet {
             }
             drawTable(resp,x.toString(),y.toString(),r.toString(),res,currentTime, execTime, "button");
         }else {
-            createErrorPage(resp,"Something get wrong!");
+            resp.sendRedirect("errorPage.jsp");
         }
 
         HttpSession session = req.getSession();
@@ -119,7 +119,7 @@ public class AreaCheckServlet extends HttpServlet {
             drawTable(resp,x.toString(),y.toString(),r.toString(),res,currentTime, execTime, "graphic");
 
         }else {
-            createErrorPage(resp,"Something get wrong!");
+            resp.sendRedirect("errorPage.jsp");
         }
     }
 
@@ -266,8 +266,8 @@ public class AreaCheckServlet extends HttpServlet {
     }
 
 
-    public void createErrorPage(HttpServletResponse resp, String text) throws IOException {
-
+    /*public void createErrorPage(HttpServletResponse resp, String text) throws IOException {
+        resp.sendRedirect("errorPage.jsp");
 
         PrintWriter writer = resp.getWriter();
         String answer =
@@ -343,7 +343,7 @@ public class AreaCheckServlet extends HttpServlet {
                         "</html>";
         writer.write(answer);
         writer.close();
-    }
+    }*/
 
     private boolean tryToParse(String s) {
         try {

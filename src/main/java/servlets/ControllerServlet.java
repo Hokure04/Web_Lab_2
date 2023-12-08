@@ -25,6 +25,7 @@ public class ControllerServlet extends HttpServlet {
             }
 
         } catch (Exception e) {
+            resp.sendRedirect("errorPage.jsp");
             PrintWriter writer = resp.getWriter();
             writer.write("Controller operation error: " + e.toString());
             writer.close();
@@ -32,7 +33,7 @@ public class ControllerServlet extends HttpServlet {
     }
 
 
-    public void createErrorPage(HttpServletResponse resp, String Y, String R) throws IOException {
+    /*public void createErrorPage(HttpServletResponse resp, String Y, String R) throws IOException {
         PrintWriter writer = resp.getWriter();
         String answer = "<html>\n" +
                 "  <head>\n" +
@@ -45,7 +46,7 @@ public class ControllerServlet extends HttpServlet {
                 "</body></html>";
         writer.write(answer);
         writer.close();
-    }
+    }*/
 
 
     private boolean tryToParse(String s) {
