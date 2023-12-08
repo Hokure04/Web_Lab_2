@@ -36,7 +36,7 @@
                     <p style="visibility: hidden">graphic</p>
                     <%@ include file="svg.html" %>
                     <circle id="point" r="3" cx="125" cy="125" fill="white" stroke="#641AD5" visibility="visible"></circle>
-                    <jsp:include page="table.jsp" />
+                    <jsp:include page="points.jsp" />
                     </svg>
                 </div>
             </td>

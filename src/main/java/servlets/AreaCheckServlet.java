@@ -61,7 +61,7 @@ public class AreaCheckServlet extends HttpServlet {
         //^[+-]?\d*\.?0*$
         String regex1 = "^[+-]?[3-5]*\\.?0*$";
         String regex2 = "^[+-]?[0-2]*\\.?[0-9]*$";
-        String regex3 = "^[+-]?[0-4]*\\.?[0-9]*$";
+        String regex3 = "^[+-]?[2-4]*\\.?[0-9]*$";
         Pattern pattern = Pattern.compile(regex1);
         Pattern pattern1 = Pattern.compile(regex2);
         Pattern pattern2 = Pattern.compile(regex3);
@@ -89,7 +89,7 @@ public class AreaCheckServlet extends HttpServlet {
                 res = "False";
                 model.setPoint(new Point(x,y,r,execTime,false));
             }
-            drawTable(resp,x.toString(),y.toString(),r.toString(),res,currentTime, execTime);
+            drawTable(resp,x.toString(),y.toString(),r.toString(),res,currentTime, execTime, "button");
         }else {
             createErrorPage(resp,"Something get wrong!");
         }
@@ -116,16 +116,18 @@ public class AreaCheckServlet extends HttpServlet {
                 res = "False";
                 model.setPoint(new Point(x,y,r,execTime,false));
             }
-            drawTable(resp,x.toString(),y.toString(),r.toString(),res,currentTime, execTime);
+            drawTable(resp,x.toString(),y.toString(),r.toString(),res,currentTime, execTime, "graphic");
 
         }else {
             createErrorPage(resp,"Something get wrong!");
         }
     }
 
-    public void drawTable(HttpServletResponse resp, String x, String y, String r, String result,String currentTime, String execTime) throws IOException {
+    public void drawTable(HttpServletResponse resp, String x, String y, String r, String result,String currentTime, String execTime, String sender) throws IOException {
 
-        PrintWriter writer = resp.getWriter();
+        resp.sendRedirect("table.jsp?x="+x+"&y="+y+"&r="+r+"&result="+result+"&currentTime="+currentTime+"&execTime="+execTime+"&sender="+sender);
+
+        /*PrintWriter writer = resp.getWriter();
         String answer = "<html>\n" +
                 "  <head>\n" +
                 "   <meta charset=\"utf-8\" /> " +
@@ -260,11 +262,13 @@ public class AreaCheckServlet extends HttpServlet {
                 "    </body>\n" +
                 "</html>";
         writer.write(answer);
-        writer.close();
+        writer.close();*/
     }
 
 
     public void createErrorPage(HttpServletResponse resp, String text) throws IOException {
+
+
         PrintWriter writer = resp.getWriter();
         String answer =
                 "<!DOCTYPE html>\n"+
