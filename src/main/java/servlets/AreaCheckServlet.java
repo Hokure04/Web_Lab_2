@@ -89,7 +89,7 @@ public class AreaCheckServlet extends HttpServlet {
                 res = "False";
                 model.setPoint(new Point(x,y,r,execTime,false));
             }
-            drawTable(resp,x.toString(),y.toString(),r.toString(),res,currentTime, execTime, "button");
+            resp.sendRedirect("table.jsp?x="+x+"&y="+y+"&r="+r+"&result="+res+"&currentTime="+currentTime+"&execTime="+execTime+"&sender=button");
         }else {
             resp.sendRedirect("errorPage.jsp");
         }
@@ -116,18 +116,18 @@ public class AreaCheckServlet extends HttpServlet {
                 res = "False";
                 model.setPoint(new Point(x,y,r,execTime,false));
             }
-            drawTable(resp,x.toString(),y.toString(),r.toString(),res,currentTime, execTime, "graphic");
+            resp.sendRedirect("table.jsp?x="+x+"&y="+y+"&r="+r+"&result="+res+"&currentTime="+currentTime+"&execTime="+execTime+"&sender=graphic");
 
         }else {
             resp.sendRedirect("errorPage.jsp");
         }
     }
 
-    public void drawTable(HttpServletResponse resp, String x, String y, String r, String result,String currentTime, String execTime, String sender) throws IOException {
+    /*public void drawTable(HttpServletResponse resp, String x, String y, String r, String result,String currentTime, String execTime, String sender) throws IOException {
 
         resp.sendRedirect("table.jsp?x="+x+"&y="+y+"&r="+r+"&result="+result+"&currentTime="+currentTime+"&execTime="+execTime+"&sender="+sender);
 
-        /*PrintWriter writer = resp.getWriter();
+        PrintWriter writer = resp.getWriter();
         String answer = "<html>\n" +
                 "  <head>\n" +
                 "   <meta charset=\"utf-8\" /> " +
@@ -262,8 +262,8 @@ public class AreaCheckServlet extends HttpServlet {
                 "    </body>\n" +
                 "</html>";
         writer.write(answer);
-        writer.close();*/
-    }
+        writer.close();
+    }*/
 
 
     /*public void createErrorPage(HttpServletResponse resp, String text) throws IOException {
@@ -356,12 +356,8 @@ public class AreaCheckServlet extends HttpServlet {
 
 
     public boolean inZone(Double x, Double y, Double r){
-        boolean res = false;
-        if ((x<=0) && (y>=0) && (x*x + y*y <= (r/2)*(r/2))||
+        return ((x<=0) && (y>=0) && (x*x + y*y <= (r/2)*(r/2))||
                 ((x>=0) && (y <= 0) && (y >= -r) && (x<= (r/2)))||
-                ((x >= 0) && (y>=0) && (x*x + y*y <= (r*r + (r/2)*(r/2))))){
-            res = true;
-        }
-        return res;
+                ((x >= 0) && (y>=0) && (x*x + y*y <= (r*r + (r/2)*(r/2)))));
     }
 }

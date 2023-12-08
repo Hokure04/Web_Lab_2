@@ -43,19 +43,21 @@
         <td class="table">
             <div id="error2">${param.y}</div>
             <%
-                double scale = Math.pow(10, 4);
-                String stringY = request.getParameter("y");
-                String regex1 = "^[+-]?[3-5]*\\.?0*$";
-                String regex2 = "^[+-]?[0-2]*\\.?[0-9]*$";
-                Pattern pattern = Pattern.compile(regex1);
-                Pattern pattern1 = Pattern.compile(regex2);
-                Matcher matches11 = pattern.matcher(stringY);
-                Matcher matches12 = pattern1.matcher(stringY);
-                boolean matcher11 = matches11.matches();
-                boolean matcher12 = matches12.matches();
-                Double y = Math.ceil(Double.parseDouble(stringY)*scale)/scale;
-                if(!((y<=3) && (y>=-3) && (matcher11 || matcher12))){
-                    response.sendRedirect("errorPage.jsp");
+                if(request.getParameter("sender").equals("button")) {
+                    double scale = Math.pow(10, 4);
+                    String stringY = request.getParameter("y");
+                    String regex1 = "^[+-]?[3-5]*\\.?0*$";
+                    String regex2 = "^[+-]?[0-2]*\\.?[0-9]*$";
+                    Pattern pattern = Pattern.compile(regex1);
+                    Pattern pattern1 = Pattern.compile(regex2);
+                    Matcher matches11 = pattern.matcher(stringY);
+                    Matcher matches12 = pattern1.matcher(stringY);
+                    boolean matcher11 = matches11.matches();
+                    boolean matcher12 = matches12.matches();
+                    Double y = Math.ceil(Double.parseDouble(stringY) * scale) / scale;
+                    if (!((y <= 3) && (y >= -3) && (matcher11 || matcher12))) {
+                        response.sendRedirect("errorPage.jsp");
+                    }
                 }
             %>
         </td>
@@ -67,8 +69,12 @@
         <td class="table">
             <div id="error3">${param.r}</div>
             <%
+                double scale = Math.pow(10, 4);
+
                 String stringR = request.getParameter("r");
+                String regex1 = "^[+-]?[3-5]*\\.?0*$";
                 String regex3 = "^[+-]?[2-4]*\\.?[0-9]*$";
+                Pattern pattern = Pattern.compile(regex1);
                 Pattern pattern2 = Pattern.compile(regex3);
                 Matcher matches21 = pattern.matcher(stringR);
                 Matcher matches22 = pattern2.matcher(stringR);
