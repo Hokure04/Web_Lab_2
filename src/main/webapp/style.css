@@ -1,0 +1,139 @@
+* {
+    font-family: "Avenir Next Cyr", Arial, sans-serif;
+    text-align: center;
+    font-weight: normal;
+}
+
+body {
+    background-color: #0095B6;
+    background-image: url("images/1.jpg");
+}
+
+header {
+    z-index: 5;
+    width: 100%;
+    text-align: center;
+    position: fixed;
+    color: white;
+    background-color: #000720;
+    left: 0;
+    font-size: 0.6em;
+    top: 0;
+}
+
+#credit > img {
+    width: 40px;
+    height: 20px;
+}
+
+#credit > a {
+    font-size: 15px;
+    text-decoration: none;
+    color: white;
+}
+
+.shaded {box-shadow: 0 0 10px 1px black}
+
+.shaded:hover {box-shadow: 0 0 20px 2px black}
+
+
+.plot{;
+    border: 1px solid #333;
+    text-align: center;
+}
+table {
+    border-radius: 100px;
+
+    font-family: "fantasy";
+    font-size: 14px;
+
+    width: 70%;
+    margin: auto;
+
+    text-align: center;
+    border-collapse: collapse;
+    border-top: 5px ridge #2E8B57;
+    border-bottom: 5px ridge #2E8B57;
+    border-right: 5px ridge #2E8B57;
+    border-left: 5px ridge #2E8B57;
+}
+th {
+    font-size: 13px;
+    font-weight: normal;
+    background: ghostwhite;
+    border-right: 1px ridge #2E8B57;
+    border-left: 1px ridge #2E8B57;
+    padding: 8px;
+}
+td {
+    background: ghostwhite;
+    border-right: 1px ridge #2E8B57;
+    border-left: 1px ridge #2E8B57;
+    padding: 8px;
+}
+
+.check-box {
+    width: 10%;
+    border: 2px solid #2E8B57;
+    border-radius: 20px;
+    background-color: white;
+}
+
+.Y_text, .R_text{
+    width: 80%;
+    border: 2px solid #2E8B57;
+    border-radius: 20px;
+    background-color: white;
+}
+
+input {cursor: pointer}
+
+#final{
+    text-transform: uppercase;
+}
+
+.result-table{
+    border-spacing: 15px 0;
+    width: 80%;
+    border: 2px solid #2E8B57;
+    border-radius: 20px;
+}
+
+#submit, #clearButton{
+    text-align: center;
+    text-transform: uppercase;
+    cursor: pointer;
+    letter-spacing: 2px;
+    position: relative;
+    background-color: #2E8B57;
+    border: none;
+    color: white;
+    padding: 15px;
+    width: 150px;
+    transition-duration: 0.4s;
+    overflow: hidden;
+    box-shadow: 0 5px 15px #193047;
+    border-radius: 4px;
+}
+
+#checkButton::after {
+    content: "";
+    background: #2E8B57;
+    display: block;
+    position: absolute;
+    padding-top: 300%;
+    padding-left: 350%;
+    margin-left: -20px !important;
+    margin-top: -120%;
+    opacity: 0;
+    transition: all 0.8s;
+}
+
+#checkButton:active::after {
+    padding: 0;
+    margin: 0;
+    opacity: 1;
+    transition: 0s;
+}
+
+#checkButton:focus {outline: 0}
