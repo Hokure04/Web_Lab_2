@@ -15,8 +15,8 @@ public class ControllerServlet extends HttpServlet {
         resp.setContentType("text/html");
 
         try {
-            if (tryToParse(req.getParameter("Y")) &&
-                    tryToParse(req.getParameter("R"))) {
+            if (isNumeric(req.getParameter("Y")) &&
+                    isNumeric(req.getParameter("R"))) {
 
                 getServletContext().getRequestDispatcher("/areaCheckServlet").forward(req, resp);
 
@@ -49,7 +49,7 @@ public class ControllerServlet extends HttpServlet {
     }*/
 
 
-    private boolean tryToParse(String s) {
+    private boolean isNumeric(String s) {
         try {
             Double.parseDouble(s);
             return true;

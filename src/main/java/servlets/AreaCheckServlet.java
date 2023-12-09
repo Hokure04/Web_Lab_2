@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import static java.lang.Double.NaN;
 
 public class AreaCheckServlet extends HttpServlet {
     public Model model;
@@ -28,11 +29,11 @@ public class AreaCheckServlet extends HttpServlet {
         }
 
         try {
-            if (!(tryToParse(req.getParameter("x")) && (tryToParse(req.getParameter("Xgr"))))) {
-                if (tryToParse(req.getParameter("x"))) {
+            if (!(isNumeric(req.getParameter("x")) && (isNumeric(req.getParameter("Xgr"))))) {
+                if (isNumeric(req.getParameter("x"))) {
 
                     checkButton(req,resp);
-                } else if (tryToParse(req.getParameter("Xgr"))) {
+                } else if (isNumeric(req.getParameter("Xgr"))) {
 
                     checkGraphic(req,resp);
                 } else {
@@ -55,7 +56,7 @@ public class AreaCheckServlet extends HttpServlet {
         double scale = Math.pow(10, 4);
         long start = System.nanoTime();
         String res = "";
-        Double x = Math.ceil(Double.parseDouble(req.getParameter("x")) * scale) / scale;
+        Double x = Math.ceil(tryToParse(req.getParameter("x")) * scale) / scale;
         String stringY = req.getParameter("Y");
         String stringR = req.getParameter("R");
         //^[+-]?\d*\.?0*$
@@ -74,8 +75,8 @@ public class AreaCheckServlet extends HttpServlet {
         boolean matcher21 = matches21.matches();
         boolean matcher22 = matches22.matches();
 
-        Double y = Math.ceil(Double.parseDouble(stringY) * scale) / scale;
-        Double r = Math.ceil(Double.parseDouble(stringR)*scale) / scale;
+        Double y = Math.ceil(tryToParse(stringY) * scale) / scale;
+        Double r = Math.ceil(tryToParse(stringR)*scale) / scale;
 
         String execTime = String.valueOf(System.nanoTime() - start);
         String currentTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
@@ -102,9 +103,9 @@ public class AreaCheckServlet extends HttpServlet {
         double scale = Math.pow(10, 4);
         long start = System.nanoTime();
         String res = "";
-        Double x = Math.ceil(Double.parseDouble(req.getParameter("Xgr")) * scale) / scale;
-        Double y = Math.ceil(Double.parseDouble(req.getParameter("Y")) * scale) / scale;
-        Double r = Math.ceil(Double.parseDouble(req.getParameter("R")) * scale) / scale;
+        Double x = Math.ceil(tryToParse(req.getParameter("Xgr")) * scale) / scale;
+        Double y = Math.ceil(tryToParse(req.getParameter("Y")) * scale) / scale;
+        Double r = Math.ceil(tryToParse(req.getParameter("R")) * scale) / scale;
         String execTime = String.valueOf(System.nanoTime() - start);
         String currentTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
         if((r>=2)&&(r<=5)){
@@ -121,6 +122,21 @@ public class AreaCheckServlet extends HttpServlet {
         }else {
             resp.sendRedirect("errorPage.jsp");
         }
+    }
+
+    private Double tryToParse(String s) {
+        try {
+            return Double.parseDouble(s);
+        } catch (NumberFormatException | NullPointerException ex) {
+            return NaN;
+        }
+    }
+
+
+    public boolean inZone(Double x, Double y, Double r){
+        return ((x<=0) && (y>=0) && (x*x + y*y <= (r/2)*(r/2))||
+                ((x>=0) && (y <= 0) && (y >= -r) && (x<= (r/2)))||
+                ((x >= 0) && (y>=0) && (x*x + y*y <= (r*r + (r/2)*(r/2)))));
     }
 
     /*public void drawTable(HttpServletResponse resp, String x, String y, String r, String result,String currentTime, String execTime, String sender) throws IOException {
@@ -345,19 +361,13 @@ public class AreaCheckServlet extends HttpServlet {
         writer.close();
     }*/
 
-    private boolean tryToParse(String s) {
+
+    public static boolean isNumeric(String s) {
         try {
             Double.parseDouble(s);
             return true;
-        } catch (NumberFormatException | NullPointerException ex) {
+        }catch (NumberFormatException | NullPointerException e){
             return false;
         }
-    }
-
-
-    public boolean inZone(Double x, Double y, Double r){
-        return ((x<=0) && (y>=0) && (x*x + y*y <= (r/2)*(r/2))||
-                ((x>=0) && (y <= 0) && (y >= -r) && (x<= (r/2)))||
-                ((x >= 0) && (y>=0) && (x*x + y*y <= (r*r + (r/2)*(r/2)))));
     }
 }
