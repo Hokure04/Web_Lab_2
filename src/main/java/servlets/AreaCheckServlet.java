@@ -3,6 +3,7 @@ package servlets;
 import model.Model;
 import model.Point;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,11 +22,12 @@ public class AreaCheckServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType("text/html");
 
-        HttpSession session = req.getSession();
-        if(session.getAttribute("model") == null) {
+        ServletContext context = req.getServletContext();
+        if(context.getAttribute("model") == null) {
             model = new Model();
+            context.setAttribute("model", model);
         } else {
-            model = (Model)session.getAttribute("model");
+            model = (Model)context.getAttribute("model");
         }
 
         try {
@@ -95,8 +97,8 @@ public class AreaCheckServlet extends HttpServlet {
             resp.sendRedirect("errorPage.jsp");
         }
 
-        HttpSession session = req.getSession();
-        session.setAttribute("model", model);
+        ServletContext context = req.getServletContext();
+        context.setAttribute("model", model);
     }
 
     public void checkGraphic(HttpServletRequest req, HttpServletResponse resp) throws IOException {

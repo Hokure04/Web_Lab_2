@@ -109,11 +109,16 @@
                 <tbody id="table_out">
                 <ul>
                     <%
-                        if (!Model.points.isEmpty()) {
-                            for (int i = Model.points.size()-1; i >= 0; i--) {
-                                out.println(Model.points.get(i).toString());
+                        System.out.println("Hi");
+                        Model model = (Model) request.getServletContext().getAttribute("model");
+                        System.out.println("Sasha");
+                        if (model != null && !model.getPoints().isEmpty()) {
+                            for (int i = model.getPoints().size()-1; i >= 0; i--) {
+                                System.out.println("How are you?");
+                                out.println(model.getPoints().get(i).toString());
                             }
                         }
+
                     %>
                 </ul>
                 </tbody>

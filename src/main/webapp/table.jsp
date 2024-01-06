@@ -6,7 +6,55 @@
     <meta charset="UTF-8" />
     <title>Result</title>
     <style>
+        .header-text{
+            color:black;
+            font-size: 20px;
+        }
+        #special{
+            width: 70%;
+            font-size: 14px;
+            margin: auto;
+            text-align: center;
+            border-collapse: collapse;
+            border-top: 5px ridge #2E8B57;
+            border-bottom: 5px ridge #2E8B57;
+            border-right: 5px ridge #2E8B57;
+            border-left: 5px ridge #2E8B57;
+        }
 
+        h3{
+            text-align: center;
+            margin: auto;
+        }
+
+        table{
+            font-size: 14px;
+            margin: auto;
+            text-align: center;
+            border-collapse: collapse;
+            border-top: 5px ridge #2E8B57;
+            border-bottom: 5px ridge #2E8B57;
+            border-right: 5px ridge #2E8B57;
+            border-left: 5px ridge #2E8B57;
+        }
+
+        th{
+            font-size: 13px;
+            font-weight: normal;
+            background: ghostwhite;
+            border-right: 1px ridge #2E8B57;
+            border-left: 1px ridge #2E8B57;
+            color: black;
+            padding: 8px;
+        }
+
+        td{
+            background: ghostwhite;
+            border-right: 1px ridge #2E8B57;
+            border-left: 1px ridge #2E8B57;
+            color: black;
+            padding: 8px;
+        }
     </style>
 </head>
 <body bgcolor="#0095B6">
