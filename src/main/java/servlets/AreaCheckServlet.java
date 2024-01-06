@@ -3,6 +3,7 @@ package servlets;
 import model.Model;
 import model.Point;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import static java.lang.Double.NaN;
 
 public class AreaCheckServlet extends HttpServlet {
     public Model model;
@@ -20,27 +22,28 @@ public class AreaCheckServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType("text/html");
 
-        HttpSession session = req.getSession();
-        if(session.getAttribute("model") == null) {
+        ServletContext context = req.getServletContext();
+        if(context.getAttribute("model") == null) {
             model = new Model();
+            context.setAttribute("model", model);
         } else {
-            model = (Model)session.getAttribute("model");
+            model = (Model)context.getAttribute("model");
         }
 
         try {
-            if (!(tryToParse(req.getParameter("x")) && (tryToParse(req.getParameter("Xgr"))))) {
-                if (tryToParse(req.getParameter("x"))) {
+            if (!(isNumeric(req.getParameter("x")) && (isNumeric(req.getParameter("Xgr"))))) {
+                if (isNumeric(req.getParameter("x"))) {
 
                     checkButton(req,resp);
-                } else if (tryToParse(req.getParameter("Xgr"))) {
+                } else if (isNumeric(req.getParameter("Xgr"))) {
 
                     checkGraphic(req,resp);
                 } else {
-                    createErrorPage(resp, "Impossible to find X");
+                    resp.sendRedirect("errorPage.jsp");
                 }
 
             } else {
-                createErrorPage(resp, "Something get wrong!");
+                resp.sendRedirect("errorPage.jsp");
             }
 
         } catch (Exception e) {
@@ -55,13 +58,13 @@ public class AreaCheckServlet extends HttpServlet {
         double scale = Math.pow(10, 4);
         long start = System.nanoTime();
         String res = "";
-        Double x = Math.ceil(Double.parseDouble(req.getParameter("x")) * scale) / scale;
+        Double x = Math.ceil(tryToParse(req.getParameter("x")) * scale) / scale;
         String stringY = req.getParameter("Y");
         String stringR = req.getParameter("R");
         //^[+-]?\d*\.?0*$
         String regex1 = "^[+-]?[3-5]*\\.?0*$";
         String regex2 = "^[+-]?[0-2]*\\.?[0-9]*$";
-        String regex3 = "^[+-]?[0-4]*\\.?[0-9]*$";
+        String regex3 = "^[+-]?[2-4]*\\.?[0-9]*$";
         Pattern pattern = Pattern.compile(regex1);
         Pattern pattern1 = Pattern.compile(regex2);
         Pattern pattern2 = Pattern.compile(regex3);
@@ -74,8 +77,8 @@ public class AreaCheckServlet extends HttpServlet {
         boolean matcher21 = matches21.matches();
         boolean matcher22 = matches22.matches();
 
-        Double y = Math.ceil(Double.parseDouble(stringY) * scale) / scale;
-        Double r = Math.ceil(Double.parseDouble(stringR)*scale) / scale;
+        Double y = Math.ceil(tryToParse(stringY) * scale) / scale;
+        Double r = Math.ceil(tryToParse(stringR)*scale) / scale;
 
         String execTime = String.valueOf(System.nanoTime() - start);
         String currentTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
@@ -89,22 +92,22 @@ public class AreaCheckServlet extends HttpServlet {
                 res = "False";
                 model.setPoint(new Point(x,y,r,execTime,false));
             }
-            drawTable(resp,x.toString(),y.toString(),r.toString(),res,currentTime, execTime);
+            resp.sendRedirect("table.jsp?x="+x+"&y="+y+"&r="+r+"&result="+res+"&currentTime="+currentTime+"&execTime="+execTime+"&sender=button");
         }else {
-            createErrorPage(resp,"Something get wrong!");
+            resp.sendRedirect("errorPage.jsp");
         }
 
-        HttpSession session = req.getSession();
-        session.setAttribute("model", model);
+        ServletContext context = req.getServletContext();
+        context.setAttribute("model", model);
     }
 
     public void checkGraphic(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         double scale = Math.pow(10, 4);
         long start = System.nanoTime();
         String res = "";
-        Double x = Math.ceil(Double.parseDouble(req.getParameter("Xgr")) * scale) / scale;
-        Double y = Math.ceil(Double.parseDouble(req.getParameter("Y")) * scale) / scale;
-        Double r = Math.ceil(Double.parseDouble(req.getParameter("R")) * scale) / scale;
+        Double x = Math.ceil(tryToParse(req.getParameter("Xgr")) * scale) / scale;
+        Double y = Math.ceil(tryToParse(req.getParameter("Y")) * scale) / scale;
+        Double r = Math.ceil(tryToParse(req.getParameter("R")) * scale) / scale;
         String execTime = String.valueOf(System.nanoTime() - start);
         String currentTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
         if((r>=2)&&(r<=5)){
@@ -116,14 +119,31 @@ public class AreaCheckServlet extends HttpServlet {
                 res = "False";
                 model.setPoint(new Point(x,y,r,execTime,false));
             }
-            drawTable(resp,x.toString(),y.toString(),r.toString(),res,currentTime, execTime);
+            resp.sendRedirect("table.jsp?x="+x+"&y="+y+"&r="+r+"&result="+res+"&currentTime="+currentTime+"&execTime="+execTime+"&sender=graphic");
 
         }else {
-            createErrorPage(resp,"Something get wrong!");
+            resp.sendRedirect("errorPage.jsp");
         }
     }
 
-    public void drawTable(HttpServletResponse resp, String x, String y, String r, String result,String currentTime, String execTime) throws IOException {
+    private Double tryToParse(String s) {
+        try {
+            return Double.parseDouble(s);
+        } catch (NumberFormatException | NullPointerException ex) {
+            return NaN;
+        }
+    }
+
+
+    public boolean inZone(Double x, Double y, Double r){
+        return ((x<=0) && (y>=0) && (x*x + y*y <= (r/2)*(r/2))||
+                ((x>=0) && (y <= 0) && (y >= -r) && (x<= (r/2)))||
+                ((x >= 0) && (y>=0) && (x*x + y*y <= (r*r + (r/2)*(r/2)))));
+    }
+
+    /*public void drawTable(HttpServletResponse resp, String x, String y, String r, String result,String currentTime, String execTime, String sender) throws IOException {
+
+        resp.sendRedirect("table.jsp?x="+x+"&y="+y+"&r="+r+"&result="+result+"&currentTime="+currentTime+"&execTime="+execTime+"&sender="+sender);
 
         PrintWriter writer = resp.getWriter();
         String answer = "<html>\n" +
@@ -261,10 +281,12 @@ public class AreaCheckServlet extends HttpServlet {
                 "</html>";
         writer.write(answer);
         writer.close();
-    }
+    }*/
 
 
-    public void createErrorPage(HttpServletResponse resp, String text) throws IOException {
+    /*public void createErrorPage(HttpServletResponse resp, String text) throws IOException {
+        resp.sendRedirect("errorPage.jsp");
+
         PrintWriter writer = resp.getWriter();
         String answer =
                 "<!DOCTYPE html>\n"+
@@ -339,25 +361,15 @@ public class AreaCheckServlet extends HttpServlet {
                         "</html>";
         writer.write(answer);
         writer.close();
-    }
+    }*/
 
-    private boolean tryToParse(String s) {
+
+    public static boolean isNumeric(String s) {
         try {
             Double.parseDouble(s);
             return true;
-        } catch (NumberFormatException | NullPointerException ex) {
+        }catch (NumberFormatException | NullPointerException e){
             return false;
         }
-    }
-
-
-    public boolean inZone(Double x, Double y, Double r){
-        boolean res = false;
-        if ((x<=0) && (y>=0) && (x*x + y*y <= (r/2)*(r/2))||
-                ((x>=0) && (y <= 0) && (y >= -r) && (x<= (r/2)))||
-                ((x >= 0) && (y>=0) && (x*x + y*y <= (r*r + (r/2)*(r/2))))){
-            res = true;
-        }
-        return res;
     }
 }
